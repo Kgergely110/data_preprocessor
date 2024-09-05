@@ -61,3 +61,20 @@ def handle_non_ordinal_column(df, col):
                 cprint("[-] Invalid choice. Please try again!", "red")
         except ValueError:
             cprint("[-] Invalid input. Please enter a number.", "red")
+            
+def choose_column(df):
+    """Display a menu to the user to select a column for categorical data handling."""
+    columns = df.columns
+    columns = [col for col in columns if df[col].dtype == 'object']
+    for i, col in enumerate(columns, 1):
+        cprint(f"[{i}] {col}", "yellow")
+    
+    while True:
+        try:
+            choice = int(input("Select column number: "))
+            if 1 <= choice <= len(columns):
+                return columns[choice - 1]
+            else:
+                cprint("[-] Invalid choice. Please try again!", "red")
+        except ValueError:
+            cprint("[-] Invalid input. Please enter a number.", "red")

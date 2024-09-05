@@ -124,4 +124,4 @@ def select_features(df, target):
     choices = input("Enter column numbers: ").replace(',', ' ').replace(';', ' ').split()
     choices = [choice.strip() for choice in choices]
     
-    return [df.columns[int(choice)-1] for choice in choices if df.columns[int(choice)-1] != target]
+    return [df.columns[int(choice)-1] for choice in choices if df.columns[int(choice)-1] != target] 

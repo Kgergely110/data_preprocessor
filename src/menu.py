@@ -4,6 +4,7 @@ from data_loader import save_dataframe
 from column_operations import index_column, remove_column
 from plot_menu import plot_menu
 from model_menu import model_menu
+from categorical_data import handle_non_ordinal_column, choose_column
 
 def menu(df, is_last=False):
     """Display a menu to the user to perform various operations on the DataFrame."""
@@ -12,6 +13,7 @@ def menu(df, is_last=False):
         choices = [
             "Add or remove index column",
             "Remove a column",
+            "Deal with categorical data",
             "Train a classification model",
             "Save the dataframe",
             "Inspect data",
@@ -22,6 +24,7 @@ def menu(df, is_last=False):
         choices = [
             "Add or remove index column",
             "Remove a column",
+            "Deal with categorical data",
             "Train a classification model",
             "Save the dataframe",
             "Inspect data",
@@ -42,14 +45,17 @@ def menu(df, is_last=False):
             elif choice == 2:
                 remove_column(df)
             elif choice == 3:
-                model_menu(df)
+                col = choose_column(df)
+                handle_non_ordinal_column(df, col)
             elif choice == 4:
-                save_dataframe(df)
+                model_menu(df)
             elif choice == 5:
-                inspect_data(df)
+                save_dataframe(df)
             elif choice == 6:
-                plot_menu(df)
+                inspect_data(df)
             elif choice == 7:
+                plot_menu(df)
+            elif choice == 8:
                 cprint("[*] Exiting...", "green")
                 return
             else:
