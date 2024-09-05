@@ -13,8 +13,6 @@ warnings.filterwarnings("ignore")
 
 from data_loader import load_data
 from missing_data import handle_missing_data
-#from model_training import model_menu
-#from plotting import plot_menu
 from utils import safe_import, remove_duplicates, inspect_data
 from menu import menu
 
@@ -31,7 +29,7 @@ def main():
         inspect_data(df)
         handle_missing_data(df)
         remove_duplicates(df)
-        cprint("[*] Preprocessing complete!", "green")
+        cprint("[*] Initial preprocessing complete!", "green")
         if  file == files[-1]:
             menu(df, is_last=True)
         else:

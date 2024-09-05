@@ -5,13 +5,13 @@ from termcolor import cprint
 
 def handle_non_ordinal_column(df, col):
     """Handle non-numeric columns when numeric imputation is attempted."""
-    cprint(f"[!] Cannot perform numeric imputation on non-numeric column '{col}'.", "red")
+    cprint(f"[!] Cannot perform requested operation on non-numeric column '{col}'.", "red")
     cprint("[?] How do you want to resolve the imputation into object-type column?", "yellow")
 
     choices = [
         "Change imputation method",
         "Ordinal encode the column",
-        "Remove records with missing values and skip the column"
+        "Remove records with missing values and skip the column",
         "Drop the column"
     ]
     
