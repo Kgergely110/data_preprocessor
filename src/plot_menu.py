@@ -3,6 +3,36 @@ from termcolor import cprint
 import seaborn as sns
 
 
+def select_columns(df):
+    """Prompt the user to select columns and return the corresponding column names."""
+    while True:
+        cprint("[?] Select columns to plot (space, comma and semicolon are delimiters, colon and dash define inclusive range)", "yellow")
+        columns = df.columns
+        for i, col in enumerate(columns, 1):
+            cprint(f"[{i}] {col}", "yellow")
+        
+        try:
+            choices = input("Enter column numbers: ").replace(',', ' ').replace(';', ' ').split()
+            choices = [choice.strip() for choice in choices]
+            selected_columns = []
+            
+            for choice in choices:
+                if '-' in choice or ':' in choice:
+                    start, end = map(int, choice.replace('-', ':').split(':'))
+                    selected_columns += list(columns[start-1:end])
+                else:
+                    selected_columns.append(columns[int(choice) - 1])
+                    
+            if not selected_columns:
+                cprint("[-] No columns selected. Please try again!", "red")
+                continue
+            
+            return selected_columns
+        
+        except (ValueError, IndexError):
+            cprint("[-] Invalid input. Please enter valid column numbers.", "red")
+            continue
+
 
 def plot_menu(df):
     """Display a menu to the user to plot various types of graphs."""
@@ -36,73 +66,52 @@ def plot_menu(df):
                 cprint("[-] Invalid choice. Please try again!", "red")
         except ValueError:
             cprint("[-] Invalid input. Please enter a number.", "red")
-            
+
+
 def plot_histogram(df):
-    """Plot a histogram for the slected columns in the DataFrame."""
-    while True:
-        cprint("[?] Select columns to plot the histogram (space, comma and semicolon are delimiters, colon and dash define inclusive range)", "yellow")
-        columns = df.columns
-        for i, col in enumerate(columns, 1):
-            cprint(f"[{i}] {col}", "yellow")
-        try:
-            choices = input("Enter column numbers: ").split()
-            choices = [choice.strip() for choice in choices]
-            choices = [int(choice) for choice in choices]
-            if len(choices) == 0:
-                cprint("[-] No columns selected. Please try again!", "red")
-                continue
-        except ValueError:
-            cprint("[-] Invalid input. Please enter a number.", "red")
-            continue
-        if any(not choice.isdigit() for choice in choices or any(int(choice) < 1 or int(choice) > len(columns) for choice in choices)):
-            cprint("[-] Invalid input. Please try again!", "red")
-            continue
-        
-        for choice in choices:
-            if '-' in choice:
-                start, end = map(int, choice.split('-'))
-                choices += list(range(start, end + 1))
-            elif ':' in choice:
-                start, end = map(int, choice.split(':'))
-                choices += list(range(start, end + 1))
-        break
+    """Plot a histogram for the selected columns in the DataFrame."""
+    selected_columns = select_columns(df)
     
-    for col in columns:
+    for col in selected_columns:
         if df[col].dtype in ['int64', 'float64']:
             plt.figure()
-            sns.histplot(df[col].dropna())
+            sns.histplot(df[col], kde=True)
             plt.title(f"Histogram of {col}")
             plt.show()
-            return
-            
+
+
 def plot_boxplot(df):
-    """Plot a boxplot for each column in the DataFrame."""
-    columns = df.columns
-    for col in columns:
+    """Plot a boxplot for the selected columns in the DataFrame."""
+    selected_columns = select_columns(df)
+    
+    for col in selected_columns:
         if df[col].dtype in ['int64', 'float64']:
             plt.figure()
-            sns.boxplot(x=col, data=df)
+            sns.boxplot(x=df[col])
             plt.title(f"Boxplot of {col}")
             plt.show()
-            return
-        
+
+
 def plot_scatter(df):
-    """Plot a scatter plot for each pair of columns in the DataFrame."""
-    columns = df.columns
-    for i, col1 in enumerate(columns):
-        for j, col2 in enumerate(columns):
-            if i != j and df[col1].dtype in ['int64', 'float64'] and df[col2].dtype in ['int64', 'float64']:
-                plt.figure()
-                sns.scatterplot(x=col1, y=col2, data=df)
-                plt.title(f"Scatter plot of {col1} vs {col2}")
-                plt.show()
-                return
-            
+    """Plot a scatter plot for a pair of selected columns in the DataFrame."""
+    selected_columns = select_columns(df)
+    
+    if len(selected_columns) >= 2:
+        for i, col1 in enumerate(selected_columns):
+            for col2 in selected_columns[i+1:]:
+                if df[col1].dtype in ['int64', 'float64'] and df[col2].dtype in ['int64', 'float64']:
+                    plt.figure()
+                    sns.scatterplot(x=col1, y=col2, data=df)
+                    plt.title(f"Scatter plot of {col1} vs {col2}")
+                    plt.show()
+    else:
+        cprint("[-] Please select at least two columns for scatter plot.", "red")
+
+
 def plot_heatmap(df):
     """Plot a correlation heatmap for the DataFrame."""
     plt.figure()
     sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
     plt.title("Correlation Heatmap")
     plt.show()
-    return
 

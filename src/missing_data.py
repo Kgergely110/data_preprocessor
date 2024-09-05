@@ -50,9 +50,8 @@ def get_imputation_method(individual=False):
         except ValueError:
             cprint("[-] Invalid input. Please enter a number.", "red")
             
-def impute_missing_data(df, method_choice, column=None):
+def impute_missing_data(df:pd.DataFrame, method_choice, column=None):
     """Impute missing data in the DataFrame based on the selected method."""
-    df = pd.DataFrame(df)
     if method_choice == 1:
         df.dropna(axis=0, inplace=True)
         cprint("[+] Rows with missing values dropped!", "green")
