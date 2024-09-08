@@ -50,7 +50,7 @@ def plot_menu(df):
         for i, choice in enumerate(choices, 1):
             cprint(f"[{i}] {choice}", "yellow")
         try:
-            choice = int(input("Select an option: "))
+            choice = int(input("Select an option: ").strip())
             if choice == 1:
                 plot_histogram(df)
             elif choice == 2:
@@ -109,9 +109,21 @@ def plot_scatter(df):
 
 
 def plot_heatmap(df):
-    """Plot a correlation heatmap for the DataFrame."""
-    plt.figure()
-    sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+    """Plot a correlation heatmap for the DataFrame with only numeric columns."""
+    numeric_df = df.select_dtypes(include=['int64', 'float64'])
+    
+    if numeric_df.empty:
+        cprint("[-] No numeric columns found for correlation heatmap.", "red")
+        return
+    elif len(numeric_df.columns) == 1:
+        cprint("[-] There are less, then two numeric columns.", "red")
+        return
+    elif len(numeric_df.columns) != len(df.columns):
+        cprint(F"[!] Warning: {len(df.columns)-len(numeric_df.columns)} non-numeric columns are ignored in correlation heatmap.", "yellow")
+
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(numeric_df.corr(), annot=True, cmap='coolwarm', fmt=".2f")
     plt.title("Correlation Heatmap")
     plt.show()
+
 
