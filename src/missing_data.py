@@ -10,7 +10,7 @@ def handle_missing_data(df):
     if null_count == 0:
         cprint("[+] No missing data found!", "green")
     else:
-        cprint(f"[-] {null_count} missing values found!", "red")
+        cprint(f"\n[-] {null_count} missing values found!\n", "red")
         method_choice = get_imputation_method()
         impute_missing_data(df, method_choice)
 
@@ -21,10 +21,10 @@ def get_imputation_method(individual=False):
             "Drop rows with missing values in this column",
             "Drop column",
             "Regression imputation",
-            "Mean imputation",
-            "Median imputation",
-            "Mode imputation",
-            "Custom value imputation"
+            "Mean substitution",
+            "Median substitution",
+            "Mode substitution",
+            "Custom value substitution"
         ]
     else:
         choices = [
