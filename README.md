@@ -11,7 +11,7 @@
   - detect missing values
   - remove rows with missing values
   - remove columns with missing values
-  - mean / median / mode / regression / custom imputation
+  - mean / median / mode / regression / custom substitution
   - detect, add or remove index column
   - remove duplicate data
   - remove given columns
